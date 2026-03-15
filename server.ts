@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 
 const pool = new Pool({
-  connectionString: process.env.URL_DO_BANCO_DE_DADOS,
+  connectionString: process.env.DATABASE_URL,
 });
 
 const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
@@ -21,8 +21,8 @@ app.get("/webhook", (req, res) => {
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
-  if (mode === "subscribe" && token === process.env.VERIFICAR_TOKEN) {
-    console.log("Webhook verificado!");
+  if (mode === "subscribe" && token === process.env.VERIFY_TOKEN) {
+    console.log("Webhook verified!");
     return res.status(200).send(challenge);
   }
   return res.sendStatus(403);
@@ -50,7 +50,7 @@ app.post("/webhook", async (req, res) => {
         const aiResponse = response.text;
 
         await axios.post(
-          `https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
+          `https://graph.facebook.com/v21.0/${process.env.PHONE_NUMBER_ID}/messages`,
           { messaging_product: "whatsapp", to: from, type: "text", text: { body: aiResponse } },
           { headers: { Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}` } }
         );
@@ -68,5 +68,5 @@ app.post("/webhook", async (req, res) => {
   res.sendStatus(404);
 });
 
-const PORT = process.env.PORTA || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
