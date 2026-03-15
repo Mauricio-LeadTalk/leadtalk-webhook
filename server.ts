@@ -45,7 +45,7 @@ app.post("/webhook", async (req, res) => {
 
         const response = await genAI.models.generateContent({
           model: "gemini-2.0-flash",
-          contents: `Você é um assistente de vendas prestativo do CNA. Responda de forma curta e amigável: "${msgText}"`
+          contents: `Voce e um assistente de vendas prestativo do CNA. Responda de forma curta e amigavel: "${msgText}"`
         });
         const aiResponse = response.text;
 
